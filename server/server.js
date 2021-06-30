@@ -38,7 +38,7 @@ app.listen(PORT, () => {
 
 //get request
 //returns artistList(array) objects from postgres to server
-app.get('/' (req,res) =>{
+app.get('/artist', (req,res) => {
     //Create a variable to hold the SQL query
     let queryText= 'SELECT * FROM "artist";';
     //making request to database to grab data
@@ -51,26 +51,6 @@ app.get('/' (req,res) =>{
         })
 })
 
-
-
-// const artistList = [ 
-//     {
-//         name: 'Ella Fitzgerald',
-//         birthdate: '04-25-1917'
-//     },
-//     {
-//         name: 'Dave Brubeck',
-//         birthdate: '12-06-1920'
-//     },       
-//     {
-//         name: 'Miles Davis',
-//         birthdate: '05-26-1926'
-//     },
-//     {
-//         name: 'Esperanza Spalding',
-//         birthdate: '10-18-1984'
-//     },
-// ]
 const songList = [
     {
         title: 'Take Five',
@@ -90,10 +70,10 @@ const songList = [
 ];
 
 
-app.get('/artist', (req, res) => {
-    console.log(`In /songs GET`);
-    res.send(artistList);
-});
+// app.get('/artist', (req, res) => {
+//     console.log(`In /songs GET`);
+//     res.send(artistList);
+// });
 
 app.post('/artist', (req, res) => {
     artistList.push(req.body);
