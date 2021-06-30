@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const pg= require('pg');
+const { query } = require('express');
 
 
 const app = express();
@@ -51,39 +52,25 @@ app.get('/artist', (req,res) => {
         })
 })
 
-const songList = [
-    {
-        title: 'Take Five',
-        length: '5:24',
-        released: '1959-09-29'
-    },
-    {
-        title: 'So What',
-        length: '9:22',
-        released: '1959-08-17'
-    },
-    {
-        title: 'Black Gold',
-        length: '5:17',
-        released: '2012-02-01'
-    }
-];
-
-
-// app.get('/artist', (req, res) => {
-//     console.log(`In /songs GET`);
-//     res.send(artistList);
-// });
 
 app.post('/artist', (req, res) => {
     artistList.push(req.body);
     res.sendStatus(201);
 });
 
-app.get('/song', (req, res) => {
-    console.log(`In /songs GET`);
-    res.send(songList);
-});
+app.get('/song', (req,res) => {
+    //Create a variable to hold the SQL query
+    let queryText= 'SELECT * FROM "song";';
+    //making request to database to grab data
+    pool.query(queryText)
+        .then(result =>{
+            console.log("Request completed", result);
+        res.send(result.rows);
+        }).catch(error =>{
+            console.log('Error in getting artist from postgres', error);
+            res.sendStatus(500);
+        })
+})
 
 app.post('/song', (req, res) => {
     songList.push(req.body);
