@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const pg= require('pg');
 
+
 const app = express();
 const PORT = 5000;
 const Pool= pg.Pool;
@@ -13,6 +14,17 @@ const pool = new Pool({
     idleTimeoutMillis: 30000
 })
 
+
+//for debugging purposes
+pool.on('connect', () =>{
+    console.log('Postgresql connected.');
+});
+
+pool.on('error', ()=>{
+    console.log('Error in trying to connect to Postgresql.');
+});
+
+app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('server/public'));
 
@@ -20,25 +32,45 @@ app.listen(PORT, () => {
     console.log('listening on port', PORT)
 });
 
+
+
 // TODO - Replace static content with a database tables
-const artistList = [ 
-    {
-        name: 'Ella Fitzgerald',
-        birthdate: '04-25-1917'
-    },
-    {
-        name: 'Dave Brubeck',
-        birthdate: '12-06-1920'
-    },       
-    {
-        name: 'Miles Davis',
-        birthdate: '05-26-1926'
-    },
-    {
-        name: 'Esperanza Spalding',
-        birthdate: '10-18-1984'
-    },
-]
+
+//get request
+//returns artistList(array) objects from postgres to server
+app.get('/' (req,res) =>{
+    //Create a variable to hold the SQL query
+    let queryText= 'SELECT * FROM "artist";';
+    //making request to database to grab data
+    pool.query(queryText)
+        .then(result =>{
+        res.send(result.rows);
+        }).catch(error =>{
+            console.log('Error in getting artist from postgres', error);
+            res.sendStatus(500);
+        })
+})
+
+
+
+// const artistList = [ 
+//     {
+//         name: 'Ella Fitzgerald',
+//         birthdate: '04-25-1917'
+//     },
+//     {
+//         name: 'Dave Brubeck',
+//         birthdate: '12-06-1920'
+//     },       
+//     {
+//         name: 'Miles Davis',
+//         birthdate: '05-26-1926'
+//     },
+//     {
+//         name: 'Esperanza Spalding',
+//         birthdate: '10-18-1984'
+//     },
+// ]
 const songList = [
     {
         title: 'Take Five',
@@ -56,6 +88,7 @@ const songList = [
         released: '2012-02-01'
     }
 ];
+
 
 app.get('/artist', (req, res) => {
     console.log(`In /songs GET`);
