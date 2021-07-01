@@ -54,8 +54,19 @@ app.get('/artist', (req,res) => {
 
 
 app.post('/artist', (req, res) => {
-    artistList.push(req.body);
-    res.sendStatus(201);
+    const newArtist= req.body;
+    //making request to database to grab data
+    const queryText = `
+    INSERT INTO artist ("name", "birthdate")
+    VALUES ('${newArtist.name}', '${newArtist.birthdate}');`;
+    pool.query(queryText)
+        .then((result) =>{  
+            console.log("Request completed", result);
+            res.sendStatus(201);
+        })
+        .catch((err) =>{
+        console.log(`error making query ${queryText}`, err);
+    })
 });
 
 app.get('/song', (req,res) => {
@@ -70,11 +81,22 @@ app.get('/song', (req,res) => {
             console.log('Error in getting artist from postgres', error);
             res.sendStatus(500);
         })
-})
+    })
 
 app.post('/song', (req, res) => {
-    songList.push(req.body);
-    res.sendStatus(201);
+    const newSong= req.body;
+    //making request to database to grab data
+    const queryText = `
+    INSERT INTO song ("title", "length", "released")
+    VALUES ('${newSong.title}', '${newSong.length}', '${newSong.released}');`;
+    pool.query(queryText)
+        .then((result) =>{  
+            console.log("Request completed", result);
+            res.sendStatus(201);
+        })
+        .catch((err) =>{
+        console.log(`error making query ${queryText}`, err);
+    })
 });
 
 
