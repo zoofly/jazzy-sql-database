@@ -58,8 +58,8 @@ app.post('/artist', (req, res) => {
     //making request to database to grab data
     const queryText = `
     INSERT INTO artist ("name", "birthdate")
-    VALUES ('${newArtist.name}', '${newArtist.birthdate}');`;
-    pool.query(queryText)
+    VALUES ($1, $2);`;
+    pool.query(queryText, [newArtist.name, newArtist.birthdate])
         .then((result) =>{  
             console.log("Request completed", result);
             res.sendStatus(201);
@@ -88,8 +88,8 @@ app.post('/song', (req, res) => {
     //making request to database to grab data
     const queryText = `
     INSERT INTO song ("title", "length", "released")
-    VALUES ('${newSong.title}', '${newSong.length}', '${newSong.released}');`;
-    pool.query(queryText)
+    VALUES ($1, $2, $3);`;
+    pool.query(queryText, [newSong.title, newSong.length, newSong.released])
         .then((result) =>{  
             console.log("Request completed", result);
             res.sendStatus(201);
